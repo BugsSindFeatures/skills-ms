@@ -238,7 +238,7 @@ async def next_unseen_lecture(course: Course = get_course, user: User = user_aut
         LectureNotFoundException,
     ),
 )
-async def complecte_lecture(
+async def complete_lecture(
     *, course: Course = get_course, user: User = user_auth, lecture: Lecture = get_lecture
 ) -> Any:
     """
