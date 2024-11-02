@@ -189,3 +189,10 @@ class UserCourse(Course):
 class NextUnseenResponse(BaseModel):
     lecture: Lecture
     section: Section
+
+class Quests(BaseModel):
+    video: str
+    other: str
+    other: str
+    other: str
+    other: str

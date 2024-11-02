@@ -20,7 +20,7 @@ from api.exceptions.course import (
     NotEnoughCoinsError,
 )
 from api.redis import redis
-from api.schemas.course import Course, CourseSummary, Lecture, NextUnseenResponse, UserCourse
+from api.schemas.course import Course, CourseSummary, Lecture, NextUnseenResponse, Quests, UserCourse
 from api.schemas.user import User
 from api.services.auth import get_email
 from api.services.courses import COURSES
@@ -225,6 +225,36 @@ async def next_unseen_lecture(course: Course = get_course, user: User = user_aut
     section = course.sections[0]
     lecture = section.lectures[0]
     return NextUnseenResponse(section=section, lecture=lecture)
+
+@router.get(
+        "/courses/quests",
+        dependencies=require_verified_email,
+        responses=responses(Quests),
+)
+async def quests(course: Course = get_course, user: User = user_auth) -> Any:
+        #TODO fix this
+        already_watched = await models.LectureProgress.get_completed(user_id=user.id, course_id=course.id)
+        for section in course.sections:
+            for lecture in section.lectures:
+                if lecture.id not in already_watched:
+                    return Quests(section=section, lecture=lecture)
+
+        #TODO declare task & get it (quiz, matching, etc)
+        #TODO lecture:
+        #go through each started & bookmarked course
+        #go through each started course
+        #go through each new course in a started subskill
+        #go through each new course in a started skill
+        #go through each subskill of start
+        #go through each subskill of skill near start
+        #go through each subskill of skill near skill near start
+        #continue ...
+        lecture = section.lectures[0]
+
+        #get tasks from video
+        #go through each watched video (same lecture -> same course -> any course)
+        task = course.sections[0] 
+        return Quests(other=lecture, other=task[0], other=task[1], other=task[2], other=task[3])
 
 
 @router.put(
